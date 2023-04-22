@@ -1,12 +1,17 @@
 use handlebars::Handlebars;
 use std::collections::HashMap;
 
+#[allow(clippy::ptr_arg)]
 pub fn format(template: &String, map: &HashMap<String, String>) -> String {
 	let handlebars = Handlebars::new();
 
-	handlebars.render_template(template, map).unwrap()
+	handlebars.render_template(template, map).expect("Failed to render template")
 }
 
+
+pub fn s(template: &str, map: &[(&str, &str)]) -> String{
+	format(&template.to_string(), &map.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect::<HashMap<String, String>>())
+}
 #[derive(Debug, PartialEq)]
 pub struct Serp {
 	pub template: String,
@@ -86,5 +91,11 @@ mod tests {
 		let map = HashMap::from([("name".into(), "Ning Sun".into())]);
 
 		assert_eq!(format(&template, &map), "Hello, Ning Sun!".to_string());
+	}
+
+	#[test]
+	fn lazy_format(){
+		let s = s("{{sample}} {{string}}", &[("sample", "Hello"), ("string", "World")]);
+		assert_eq!(s, "Hello World");
 	}
 }
