@@ -8,10 +8,20 @@ pub fn format(template: &String, map: &HashMap<String, String>) -> String {
 	handlebars.render_template(template, map).expect("Failed to render template")
 }
 
-
-pub fn s(template: &str, map: &[(&str, &str)]) -> String{
+pub fn h(template: &str, map: &[(&str, &str)]) -> String{
 	format(&template.to_string(), &map.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect::<HashMap<String, String>>())
 }
+
+pub fn a(template: &str, arr: &[&str]) -> String{
+	let mut map = HashMap::new();
+	for (i, v) in arr.iter().enumerate(){
+		map.insert(i.to_string(), v.to_string());
+	}
+	format(&template.to_string(), &map)
+}
+
+
+
 #[derive(Debug, PartialEq)]
 pub struct Serp {
 	pub template: String,
@@ -95,7 +105,13 @@ mod tests {
 
 	#[test]
 	fn lazy_format(){
-		let s = s("{{sample}} {{string}}", &[("sample", "Hello"), ("string", "World")]);
-		assert_eq!(s, "Hello World");
+		let h = h("{{sample}} {{string}}", &[("sample", "Hello"), ("string", "World")]);
+		assert_eq!(h, "Hello World");
+	}
+
+	#[test]
+	fn even_lazier_format(){
+		let a = a("{{0}} {{1}}", &["Hello", "World"]);
+		assert_eq!(a, "Hello World");
 	}
 }
