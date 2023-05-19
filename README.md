@@ -39,3 +39,6 @@ takes a template as a `&str` and an array of strings in `&[&str]`. The template 
 let a = a("{{0}} {{1}}", &["Hello", "World"]);
 assert_eq!(a, "Hello World");
 ```
+
+## License
+Dual licensed under MIT and Apache 2.0
