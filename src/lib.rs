@@ -2,14 +2,14 @@ use handlebars::Handlebars;
 use std::collections::HashMap;
 
 #[allow(clippy::ptr_arg)]
-pub fn format(template: &String, map: &HashMap<String, String>) -> String {
+pub fn serp(template: &String, map: &HashMap<String, String>) -> String {
 	let handlebars = Handlebars::new();
 
 	handlebars.render_template(template, map).expect("Failed to render template")
 }
 
 pub fn t(template: &str, map: &[(&str, &str)]) -> String{
-	format(&template.to_string(), &map.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect::<HashMap<String, String>>())
+	serp(&template.to_string(), &map.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect::<HashMap<String, String>>())
 }
 
 pub fn a(template: &str, arr: &[&str]) -> String{
@@ -17,7 +17,7 @@ pub fn a(template: &str, arr: &[&str]) -> String{
 	for (i, v) in arr.iter().enumerate(){
 		map.insert(i.to_string(), v.to_string());
 	}
-	format(&template.to_string(), &map)
+	serp(&template.to_string(), &map)
 }
 
 
@@ -50,7 +50,7 @@ impl Serp {
 	}
 
 	pub fn format(&self) -> String {
-		format(&self.template, &self.map)
+		serp(&self.template, &self.map)
 	}
 }
 
@@ -85,6 +85,15 @@ mod tests {
 	}
 
 	#[test]
+	fn mutable_template(){
+		let mut s = Serp::default();
+		s.template = "{{sample}} {{string}}".to_string();
+		s.push("sample".into(), "hello".into());
+		s.push("string".into(), "world".into());
+		assert_eq!(s.format(), "hello world");
+	}
+
+	#[test]
 	fn struct_push() {
 		let mut s = Serp{
 			template: "{{sample}} {{string}}".to_string(),
@@ -97,10 +106,10 @@ mod tests {
 
 	#[test]
 	fn basic_format() {
-		let template = "Hello, {{name}}!".to_string();
-		let map = HashMap::from([("name".into(), "Ning Sun".into())]);
+		let template = "Hello, {{name}}".to_string();
+		let map = HashMap::from([("name".into(), "world".into())]);
 
-		assert_eq!(format(&template, &map), "Hello, Ning Sun!".to_string());
+		assert_eq!(serp(&template, &map), "Hello, world".to_string());
 	}
 
 	#[test]
