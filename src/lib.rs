@@ -8,7 +8,7 @@ pub fn format(template: &String, map: &HashMap<String, String>) -> String {
 	handlebars.render_template(template, map).expect("Failed to render template")
 }
 
-pub fn h(template: &str, map: &[(&str, &str)]) -> String{
+pub fn t(template: &str, map: &[(&str, &str)]) -> String{
 	format(&template.to_string(), &map.iter().map(|(k, v)| (k.to_string(), v.to_string())).collect::<HashMap<String, String>>())
 }
 
@@ -105,8 +105,8 @@ mod tests {
 
 	#[test]
 	fn lazy_format(){
-		let h = h("{{sample}} {{string}}", &[("sample", "Hello"), ("string", "World")]);
-		assert_eq!(h, "Hello World");
+		let t = t("{{sample}} {{string}}", &[("sample", "Hello"), ("string", "World")]);
+		assert_eq!(t, "Hello World");
 	}
 
 	#[test]
